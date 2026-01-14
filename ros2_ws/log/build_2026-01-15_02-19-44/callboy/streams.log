@@ -1,0 +1,62 @@
+[1.206s] Invoking command in '/home/unitree/callboy/ros2_ws/build/callboy': PYTHONPATH=/home/unitree/callboy/ros2_ws/build/callboy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --uninstall --editable --build-directory /home/unitree/callboy/ros2_ws/build/callboy/build
+[1.628s] running develop
+[1.864s] Removing /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy.egg-link (link to .)
+[1.924s] Invoked command in '/home/unitree/callboy/ros2_ws/build/callboy' returned '0': PYTHONPATH=/home/unitree/callboy/ros2_ws/build/callboy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --uninstall --editable --build-directory /home/unitree/callboy/ros2_ws/build/callboy/build
+[1.930s] Invoking command in '/home/unitree/callboy/ros2_ws/src/callboy': PYTHONPATH=/home/unitree/callboy/ros2_ws/build/callboy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/callboy build --build-base /home/unitree/callboy/ros2_ws/build/callboy/build install --record /home/unitree/callboy/ros2_ws/build/callboy/install.log --single-version-externally-managed install_data --force
+[2.330s] running egg_info
+[2.331s] writing ../../build/callboy/callboy.egg-info/PKG-INFO
+[2.332s] writing dependency_links to ../../build/callboy/callboy.egg-info/dependency_links.txt
+[2.332s] writing entry points to ../../build/callboy/callboy.egg-info/entry_points.txt
+[2.332s] writing requirements to ../../build/callboy/callboy.egg-info/requires.txt
+[2.333s] writing top-level names to ../../build/callboy/callboy.egg-info/top_level.txt
+[2.338s] reading manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'
+[2.340s] writing manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'
+[2.340s] running build
+[2.341s] running build_py
+[2.341s] creating /home/unitree/callboy/ros2_ws/build/callboy/build
+[2.342s] creating /home/unitree/callboy/ros2_ws/build/callboy/build/lib
+[2.342s] creating /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.342s] copying callboy/supported_commands.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.343s] copying callboy/command_schema.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.343s] copying callboy/sdk2_executor.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.343s] copying callboy/__init__.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.344s] copying callboy/config.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy
+[2.344s] creating /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+[2.344s] copying callboy/nodes/sdk2_executor_node.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+[2.344s] copying callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+[2.345s] copying callboy/nodes/__init__.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+[2.345s] copying callboy/nodes/ollama_planner.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+[2.345s] running install
+[2.345s] running install_lib
+[2.346s] creating /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.347s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/supported_commands.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.347s] creating /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+[2.347s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/sdk2_executor_node.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+[2.348s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+[2.348s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/__init__.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+[2.349s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/ollama_planner.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+[2.349s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/command_schema.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.349s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/sdk2_executor.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.349s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/__init__.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.350s] copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/config.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy
+[2.350s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/supported_commands.py to supported_commands.cpython-38.pyc
+[2.350s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/sdk2_executor_node.py to sdk2_executor_node.cpython-38.pyc
+[2.352s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/input_text_publisher.py to input_text_publisher.cpython-38.pyc
+[2.353s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__init__.py to __init__.cpython-38.pyc
+[2.353s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/ollama_planner.py to ollama_planner.cpython-38.pyc
+[2.355s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/command_schema.py to command_schema.cpython-38.pyc
+[2.355s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/sdk2_executor.py to sdk2_executor.cpython-38.pyc
+[2.357s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/__init__.py to __init__.cpython-38.pyc
+[2.357s] byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/config.py to config.cpython-38.pyc
+[2.359s] running install_data
+[2.359s] copying resource/callboy -> /home/unitree/callboy/ros2_ws/install/callboy/share/ament_index/resource_index/packages
+[2.360s] copying package.xml -> /home/unitree/callboy/ros2_ws/install/callboy/share/callboy
+[2.360s] copying launch/callboy.launch.py -> /home/unitree/callboy/ros2_ws/install/callboy/share/callboy/launch
+[2.360s] running install_egg_info
+[2.363s] Copying ../../build/callboy/callboy.egg-info to /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy-0.0.1-py3.8.egg-info
+[2.365s] running install_scripts
+[2.400s] Installing callboy_input_text script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+[2.401s] Installing callboy_ollama_planner script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+[2.401s] Installing callboy_sdk2_executor script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+[2.402s] writing list of installed files to '/home/unitree/callboy/ros2_ws/build/callboy/install.log'
+[2.461s] Invoked command in '/home/unitree/callboy/ros2_ws/src/callboy' returned '0': PYTHONPATH=/home/unitree/callboy/ros2_ws/build/callboy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/callboy build --build-base /home/unitree/callboy/ros2_ws/build/callboy/build install --record /home/unitree/callboy/ros2_ws/build/callboy/install.log --single-version-externally-managed install_data --force

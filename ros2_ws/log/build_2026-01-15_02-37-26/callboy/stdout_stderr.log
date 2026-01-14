@@ -1,0 +1,28 @@
+running egg_info
+writing ../../build/callboy/callboy.egg-info/PKG-INFO
+writing dependency_links to ../../build/callboy/callboy.egg-info/dependency_links.txt
+writing entry points to ../../build/callboy/callboy.egg-info/entry_points.txt
+writing requirements to ../../build/callboy/callboy.egg-info/requires.txt
+writing top-level names to ../../build/callboy/callboy.egg-info/top_level.txt
+reading manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'
+writing manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'
+running build
+running build_py
+copying callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+copying callboy/nodes/ollama_planner.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes
+running install
+running install_lib
+copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/ollama_planner.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes
+byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/input_text_publisher.py to input_text_publisher.cpython-38.pyc
+byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/ollama_planner.py to ollama_planner.cpython-38.pyc
+running install_data
+copying launch/callboy.launch.py -> /home/unitree/callboy/ros2_ws/install/callboy/share/callboy/launch
+running install_egg_info
+removing '/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy-0.0.1-py3.8.egg-info' (and everything under it)
+Copying ../../build/callboy/callboy.egg-info to /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy-0.0.1-py3.8.egg-info
+running install_scripts
+Installing callboy_input_text script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+Installing callboy_ollama_planner script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+Installing callboy_sdk2_executor script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy
+writing list of installed files to '/home/unitree/callboy/ros2_ws/build/callboy/install.log'

@@ -1,1 +1,0 @@
-/home/unitree/callboy/ros2_ws/src/callboy/setup.py

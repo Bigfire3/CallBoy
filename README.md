@@ -42,7 +42,8 @@ dry_run = true
 
 ### Run via launch (recommended)
 
-Starts planner + executor + input node (no launch arguments required):
+Starts planner + executor + input node (no launch arguments required).
+The launch file uses small startup delays so the order is: planner → executor → input-text.
 
 ```bash
 source /opt/ros/foxy/setup.bash
@@ -50,7 +51,7 @@ source /home/unitree/callboy/ros2_ws/install/setup.bash
 ros2 launch callboy callboy.launch.py
 ```
 
-### Run seperate nodes
+### Run separate nodes
 
 Terminal A (planner):
 
