@@ -40,12 +40,17 @@ dry_run = true
 
 ## Run
 
-If you see `bad_alloc caught: std::bad_alloc` when starting any ROS2 node, use CycloneDDS on loopback:
+### Run via launch (recommended)
+
+Starts planner + executor + input node (no launch arguments required):
 
 ```bash
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-export CYCLONEDDS_URI=file:///home/unitree/callboy/ros2_ws/cyclonedds_lo.xml
+source /opt/ros/foxy/setup.bash
+source /home/unitree/callboy/ros2_ws/install/setup.bash
+ros2 launch callboy callboy.launch.py
 ```
+
+### Run seperate nodes
 
 Terminal A (planner):
 
@@ -73,19 +78,16 @@ ros2 run callboy callboy_input_text
 
 Type a German command and press Enter.
 
-### Run via launch (recommended)
-
-Starts planner + executor + input node (no launch arguments required):
-
-```bash
-source /opt/ros/foxy/setup.bash
-source /home/unitree/callboy/ros2_ws/install/setup.bash
-ros2 launch callboy callboy.launch.py
-```
 
 ## Notes
+
+- If you see `bad_alloc caught: std::bad_alloc` when starting any ROS2 node, use CycloneDDS on loopback:
+
+```bash
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export CYCLONEDDS_URI=file:///home/unitree/callboy/ros2_ws/cyclonedds_lo.xml
+```
 
 - If `ros2` isn't found, you likely forgot `source /opt/ros/foxy/setup.bash`.
 - If you want to test without moving the robot, start the executor with `-p dry_run:=true`.
 - Defaults can be set in `CALLBOY_CONFIG` (or edit `/home/unitree/callboy/callboy.conf`). ROS params can override config values when running nodes manually.
-# ros2/asr fresh start
