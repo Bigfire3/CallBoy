@@ -8,12 +8,16 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
+from callboy.config import default_config_path
+
 
 class InputTextPublisher(Node):
     def __init__(self) -> None:
         super().__init__("input_text_publisher")
         self._pub = self.create_publisher(String, "callboy/input_text", 10)
 
+        # Kept for consistency with other nodes; currently not used.
+        self.declare_parameter("config_path", default_config_path())
         self.declare_parameter("text", "")
         self.declare_parameter("once", False)
 

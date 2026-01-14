@@ -8,6 +8,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
+from callboy.config import default_config_path, load_config
 from callboy.supported_commands import SUPPORTED_COMMANDS
 
 try:
@@ -81,9 +82,12 @@ class OllamaPlanner(Node):
     def __init__(self) -> None:
         super().__init__("ollama_planner")
 
-        self.declare_parameter("ollama_url", "http://localhost:11434")
-        self.declare_parameter("ollama_model", "qwen2.5:3b-instruct")
-        self.declare_parameter("timeout_s", 60.0)
+        self.declare_parameter("config_path", default_config_path())
+        cfg = load_config(self.get_parameter("config_path").get_parameter_value().string_value)
+
+        self.declare_parameter("ollama_url", cfg.ollama.url)
+        self.declare_parameter("ollama_model", cfg.ollama.model)
+        self.declare_parameter("timeout_s", float(cfg.ollama.timeout_s))
 
         self._sub = self.create_subscription(String, "callboy/input_text", self._on_text, 10)
         self._pub = self.create_publisher(String, "callboy/json", 10)

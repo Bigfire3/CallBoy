@@ -37,7 +37,7 @@ Terminal B (executor):
 source /opt/ros/foxy/setup.bash
 source /home/unitree/callboy/ros2_ws/install/setup.bash
 ros2 run callboy callboy_sdk2_executor \
-	--ros-args -p sdk2_cli_path:=/home/unitree/unitree_sdk2/build/bin/g1_loco_client -p network_interface:=lo
+	--ros-args -p sdk2_cli_path:=/home/unitree/unitree_sdk2/build/bin/g1_loco_client -p network_interface:=eth0
 ```
 
 Terminal C (CLI input publisher):
@@ -54,4 +54,5 @@ Type a German command and press Enter.
 
 - If `ros2` isn't found, you likely forgot `source /opt/ros/foxy/setup.bash`.
 - If you want to test without moving the robot, start the executor with `-p dry_run:=true`.
+- Defaults can be set in `CALLBOY_CONFIG` (or edit `/home/unitree/callboy/callboy.conf`). ROS params override the config.
 # ros2/asr fresh start

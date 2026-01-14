@@ -9,6 +9,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
+from callboy.config import default_config_path, load_config
 from callboy.command_schema import Command, Plan, plan_from_json_dict
 from callboy.sdk2_executor import ExecutorConfig, execute_plan
 from callboy.supported_commands import REQUIRES_PARAM, SUPPORTED_COMMANDS
@@ -36,10 +37,15 @@ class Sdk2ExecutorNode(Node):
     def __init__(self) -> None:
         super().__init__("sdk2_executor")
 
-        self.declare_parameter("sdk2_cli_path", "/home/unitree/unitree_sdk2/build/bin/g1_loco_client")
-        self.declare_parameter("network_interface", "lo")
-        self.declare_parameter("timeout_s", 30.0)
-        self.declare_parameter("dry_run", False)
+        self.declare_parameter("config_path", default_config_path())
+        cfg_file = self.get_parameter("config_path").get_parameter_value().string_value
+        cfg = load_config(cfg_file)
+
+        self.declare_parameter("sdk2_cli_path", cfg.sdk2.cli_path)
+        self.declare_parameter("network_interface", cfg.sdk2.network_interface)
+        self.declare_parameter("timeout_s", float(cfg.sdk2.timeout_s))
+        self.declare_parameter("dry_run", bool(cfg.sdk2.dry_run))
+        self.declare_parameter("wait_for_velocity_duration", bool(cfg.sdk2.wait_for_velocity_duration))
 
         self._lock = threading.Lock()
         self._busy = False
@@ -93,12 +99,20 @@ class Sdk2ExecutorNode(Node):
 
         dry_run = self.get_parameter("dry_run").get_parameter_value().bool_value
 
+        wait_for_velocity = self.get_parameter("wait_for_velocity_duration").get_parameter_value().bool_value
+
         self.get_logger().info(
-            f"Executing plan with {len(plan.commands)} commands via {cfg.sdk2_cli_path} (dry_run={dry_run})."
+            f"Executing plan with {len(plan.commands)} commands via {cfg.sdk2_cli_path} (dry_run={dry_run}, wait_for_velocity_duration={wait_for_velocity})."
         )
 
         try:
-            results = execute_plan(plan, cfg=cfg, dry_run=dry_run)
+            if wait_for_velocity:
+                results = execute_plan(plan, cfg=cfg, dry_run=dry_run)
+            else:
+                # No timing assistance; run commands back-to-back.
+                results = []
+                for cmd in plan.commands:
+                    results.append(execute_plan(Plan(commands=[cmd], unavailable=[]), cfg=cfg, dry_run=dry_run)[0])
         except Exception as e:
             self.get_logger().error(f"Execution failed: {e}")
             with self._lock:
