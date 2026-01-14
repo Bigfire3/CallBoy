@@ -87,7 +87,7 @@ class OllamaPlanner(Node):
 
         self.declare_parameter("ollama_url", cfg.ollama.url)
         self.declare_parameter("ollama_model", cfg.ollama.model)
-        self.declare_parameter("timeout_s", float(cfg.ollama.timeout_s))
+        self.declare_parameter("timeout_s", 60.0)
 
         self._sub = self.create_subscription(String, "callboy/input_text", self._on_text, 10)
         self._pub = self.create_publisher(String, "callboy/json", 10)

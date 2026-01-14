@@ -43,9 +43,9 @@ class Sdk2ExecutorNode(Node):
 
         self.declare_parameter("sdk2_cli_path", cfg.sdk2.cli_path)
         self.declare_parameter("network_interface", cfg.sdk2.network_interface)
-        self.declare_parameter("timeout_s", float(cfg.sdk2.timeout_s))
+        self.declare_parameter("timeout_s", float(ExecutorConfig.timeout_s))
         self.declare_parameter("dry_run", bool(cfg.sdk2.dry_run))
-        self.declare_parameter("wait_for_velocity_duration", bool(cfg.sdk2.wait_for_velocity_duration))
+        self.declare_parameter("wait_for_velocity_duration", True)
 
         self._lock = threading.Lock()
         self._busy = False

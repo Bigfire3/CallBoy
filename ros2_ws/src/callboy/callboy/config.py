@@ -10,22 +10,37 @@ from typing import Optional
 class OllamaConfig:
     url: str = "http://localhost:11434"
     model: str = "qwen2.5:3b-instruct"
-    timeout_s: float = 60.0
 
 
 @dataclass(frozen=True)
 class Sdk2Config:
     cli_path: str = "/home/unitree/unitree_sdk2/build/bin/g1_loco_client"
     network_interface: str = "eth0"
-    timeout_s: float = 30.0
     dry_run: bool = False
-    wait_for_velocity_duration: bool = True
 
 
 @dataclass(frozen=True)
 class CallboyConfig:
     ollama: OllamaConfig
     sdk2: Sdk2Config
+
+
+def _get_str(parser: configparser.ConfigParser, section: str, option: str, fallback: str) -> str:
+    if not parser.has_section(section):
+        return fallback
+    try:
+        return parser.get(section, option, fallback=fallback)
+    except Exception:
+        return fallback
+
+
+def _get_bool(parser: configparser.ConfigParser, section: str, option: str, fallback: bool) -> bool:
+    if not parser.has_section(section):
+        return fallback
+    try:
+        return parser.getboolean(section, option, fallback=fallback)
+    except Exception:
+        return fallback
 
 
 def default_config_path() -> str:
@@ -35,26 +50,24 @@ def default_config_path() -> str:
 def load_config(path: Optional[str] = None) -> CallboyConfig:
     cfg_path = path or default_config_path()
 
+    if not os.path.exists(cfg_path):
+        raise FileNotFoundError(f"callboy.conf not found at: {cfg_path}")
+
     parser = configparser.ConfigParser()
     read = parser.read(cfg_path)
     if not read:
-        # Missing config is not fatal: fall back to defaults.
-        return CallboyConfig(ollama=OllamaConfig(), sdk2=Sdk2Config())
+        # Exists, but could not be read (permissions/encoding/etc.).
+        raise FileNotFoundError(f"callboy.conf exists but could not be read: {cfg_path}")
 
     ollama = OllamaConfig(
-        url=parser.get("ollama", "url", fallback=OllamaConfig.url),
-        model=parser.get("ollama", "model", fallback=OllamaConfig.model),
-        timeout_s=parser.getfloat("ollama", "timeout_s", fallback=OllamaConfig.timeout_s),
+        url=_get_str(parser, "ollama", "url", OllamaConfig.url),
+        model=_get_str(parser, "ollama", "model", OllamaConfig.model),
     )
 
     sdk2 = Sdk2Config(
-        cli_path=parser.get("sdk2", "cli_path", fallback=Sdk2Config.cli_path),
-        network_interface=parser.get("sdk2", "network_interface", fallback=Sdk2Config.network_interface),
-        timeout_s=parser.getfloat("sdk2", "timeout_s", fallback=Sdk2Config.timeout_s),
-        dry_run=parser.getboolean("sdk2", "dry_run", fallback=Sdk2Config.dry_run),
-        wait_for_velocity_duration=parser.getboolean(
-            "sdk2", "wait_for_velocity_duration", fallback=Sdk2Config.wait_for_velocity_duration
-        ),
+        cli_path=_get_str(parser, "sdk2", "cli_path", Sdk2Config.cli_path),
+        network_interface=_get_str(parser, "sdk2", "network_interface", Sdk2Config.network_interface),
+        dry_run=_get_bool(parser, "sdk2", "dry_run", Sdk2Config.dry_run),
     )
 
     return CallboyConfig(ollama=ollama, sdk2=sdk2)

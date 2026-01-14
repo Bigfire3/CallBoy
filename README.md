@@ -13,6 +13,31 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
+## Config (required)
+
+The nodes require a config file at the default path:
+
+- `/home/unitree/callboy/callboy.conf`
+
+Or override the location via environment variable:
+
+```bash
+export CALLBOY_CONFIG=/absolute/path/to/callboy.conf
+```
+
+Expected keys (example):
+
+```ini
+[ollama]
+url = http://localhost:11434
+model = qwen2.5:3b-instruct
+
+[sdk2]
+cli_path = /home/unitree/unitree_sdk2/build/bin/g1_loco_client
+network_interface = eth0
+dry_run = true
+```
+
 ## Run
 
 If you see `bad_alloc caught: std::bad_alloc` when starting any ROS2 node, use CycloneDDS on loopback:
@@ -27,8 +52,7 @@ Terminal A (planner):
 ```bash
 source /opt/ros/foxy/setup.bash
 source /home/unitree/callboy/ros2_ws/install/setup.bash
-ros2 run callboy callboy_ollama_planner \
-	--ros-args -p ollama_model:=qwen2.5:3b-instruct -p ollama_url:=http://localhost:11434
+ros2 run callboy callboy_ollama_planner
 ```
 
 Terminal B (executor):
@@ -36,8 +60,7 @@ Terminal B (executor):
 ```bash
 source /opt/ros/foxy/setup.bash
 source /home/unitree/callboy/ros2_ws/install/setup.bash
-ros2 run callboy callboy_sdk2_executor \
-	--ros-args -p sdk2_cli_path:=/home/unitree/unitree_sdk2/build/bin/g1_loco_client -p network_interface:=eth0
+ros2 run callboy callboy_sdk2_executor
 ```
 
 Terminal C (CLI input publisher):
@@ -50,9 +73,19 @@ ros2 run callboy callboy_input_text
 
 Type a German command and press Enter.
 
+### Run via launch (recommended)
+
+Starts planner + executor + input node (no launch arguments required):
+
+```bash
+source /opt/ros/foxy/setup.bash
+source /home/unitree/callboy/ros2_ws/install/setup.bash
+ros2 launch callboy callboy.launch.py
+```
+
 ## Notes
 
 - If `ros2` isn't found, you likely forgot `source /opt/ros/foxy/setup.bash`.
 - If you want to test without moving the robot, start the executor with `-p dry_run:=true`.
-- Defaults can be set in `CALLBOY_CONFIG` (or edit `/home/unitree/callboy/callboy.conf`). ROS params override the config.
+- Defaults can be set in `CALLBOY_CONFIG` (or edit `/home/unitree/callboy/callboy.conf`). ROS params can override config values when running nodes manually.
 # ros2/asr fresh start
