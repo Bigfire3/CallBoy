@@ -1,0 +1,56 @@
+[0.000000] (-) TimerEvent: {}
+[0.000516] (callboy) JobQueued: {'identifier': 'callboy', 'dependencies': OrderedDict()}
+[0.000991] (callboy) JobStarted: {'identifier': 'callboy'}
+[0.099575] (-) TimerEvent: {}
+[0.200492] (-) TimerEvent: {}
+[0.301256] (-) TimerEvent: {}
+[0.401893] (-) TimerEvent: {}
+[0.502509] (-) TimerEvent: {}
+[0.603883] (-) TimerEvent: {}
+[0.704449] (-) TimerEvent: {}
+[0.805073] (-) TimerEvent: {}
+[0.905851] (-) TimerEvent: {}
+[1.006618] (-) TimerEvent: {}
+[1.107395] (-) TimerEvent: {}
+[1.208114] (-) TimerEvent: {}
+[1.301182] (callboy) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/callboy', 'build', '--build-base', '/home/unitree/callboy/ros2_ws/build/callboy/build', 'install', '--record', '/home/unitree/callboy/ros2_ws/build/callboy/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/unitree/callboy/ros2_ws/src/callboy', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'unitree', 'SSH_CLIENT': '192.168.123.99 41134 22', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/unitree/.vscode-server/cli/servers/Stable-618725e67565b290ba4da6fe2d29f8fa1d4e3622/server/extensions/git/dist/askpass.sh', 'OPENBLAS_NUM_THREADS': '1', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/usr/local/cuda-11.4/lib64:/usr/local/lib:/usr/local/cuda-11.4/lib64:/usr/local/lib:/home/unitree/cyclonedds_ws/install/rmw_cyclonedds_cpp/lib:/home/unitree/cyclonedds_ws/install/cyclonedds/lib:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/aarch64-linux-gnu:/opt/ros/foxy/lib', 'BROWSER': '/home/unitree/.vscode-server/cli/servers/Stable-618725e67565b290ba4da6fe2d29f8fa1d4e3622/server/bin/helpers/browser.sh', 'MOTD_SHOWN': 'pam', 'HOME': '/home/unitree', 'CYCLONEDDS_URI': '/home/unitree/cyclonedds_ws/cyclonedds.xml', 'OLDPWD': '/home/unitree', 'TERM_PROGRAM_VERSION': '1.107.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-dafa6b8d-88a3-4f1f-ac1d-58632b0aa96c.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/unitree/.vscode-server/cli/servers/Stable-618725e67565b290ba4da6fe2d29f8fa1d4e3622/server/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/unitree/.vscode-server/cli/servers/Stable-618725e67565b290ba4da6fe2d29f8fa1d4e3622/server/node', 'SSL_CERT_FILE': '/usr/lib/ssl/certs/ca-certificates.crt', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'COLCON_PREFIX_PATH': '/home/unitree/callboy/ros2_ws/install:/home/unitree/cyclonedds_ws/install', 'ROS_DISTRO': 'foxy', 'LOGNAME': 'unitree', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'PKG_CONFIG_PATH': '/home/unitree/cyclonedds_ws/install/cyclonedds/lib/aarch64-linux-gnu/pkgconfig:/home/unitree/cyclonedds_ws/install/cyclonedds/lib/pkgconfig', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '2', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/usr/local/cuda-11.4/bin:/home/unitree/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/unitree/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/unitree/.vscode-server/cli/servers/Stable-618725e67565b290ba4da6fe2d29f8fa1d4e3622/server/bin/remote-cli:/home/unitree/.local/bin:/usr/local/cuda-11.4/bin:/home/unitree/cyclonedds_ws/install/cyclonedds/bin:/opt/ros/foxy/bin:/home/unitree/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'SSL_CERT_DIR': '/usr/lib/ssl/certs', 'LANG': 'en_US.UTF-8', 'RMW_IMPLEMENTATION': 'rmw_cyclonedds_cpp', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-d1cd3f387d.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/unitree/callboy/ros2_ws/install/callboy:/home/unitree/cyclonedds_ws/install/rmw_cyclonedds_cpp:/opt/ros/foxy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/unitree/callboy/ros2_ws/build/callboy', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '192.168.123.99 41134 192.168.123.164 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'MKL_NUM_THREADS': '1', 'PYTHONPATH': '/home/unitree/callboy/ros2_ws/build/callboy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages', 'OMP_NUM_THREADS': '1', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/unitree/cyclonedds_ws/install/rmw_cyclonedds_cpp:/home/unitree/cyclonedds_ws/install/cyclonedds'}, 'shell': False}
+[1.309007] (-) TimerEvent: {}
+[1.414009] (-) TimerEvent: {}
+[1.514805] (-) TimerEvent: {}
+[1.615572] (-) TimerEvent: {}
+[1.706211] (callboy) StdoutLine: {'line': b'running egg_info\n'}
+[1.706959] (callboy) StdoutLine: {'line': b'writing ../../build/callboy/callboy.egg-info/PKG-INFO\n'}
+[1.707396] (callboy) StdoutLine: {'line': b'writing dependency_links to ../../build/callboy/callboy.egg-info/dependency_links.txt\n'}
+[1.707711] (callboy) StdoutLine: {'line': b'writing entry points to ../../build/callboy/callboy.egg-info/entry_points.txt\n'}
+[1.707921] (callboy) StdoutLine: {'line': b'writing requirements to ../../build/callboy/callboy.egg-info/requires.txt\n'}
+[1.708103] (callboy) StdoutLine: {'line': b'writing top-level names to ../../build/callboy/callboy.egg-info/top_level.txt\n'}
+[1.713851] (callboy) StdoutLine: {'line': b"reading manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'\n"}
+[1.715343] (callboy) StdoutLine: {'line': b"writing manifest file '../../build/callboy/callboy.egg-info/SOURCES.txt'\n"}
+[1.715606] (-) TimerEvent: {}
+[1.715885] (callboy) StdoutLine: {'line': b'running build\n'}
+[1.716059] (callboy) StdoutLine: {'line': b'running build_py\n'}
+[1.716817] (callboy) StdoutLine: {'line': b'copying callboy/nodes/udp_audio_topic_publisher.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes\n'}
+[1.717236] (callboy) StdoutLine: {'line': b'copying callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes\n'}
+[1.717422] (callboy) StdoutLine: {'line': b'copying callboy/nodes/__init__.py -> /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes\n'}
+[1.717650] (callboy) StdoutLine: {'line': b'running install\n'}
+[1.718806] (callboy) StdoutLine: {'line': b'running install_lib\n'}
+[1.720248] (callboy) StdoutLine: {'line': b'copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/udp_audio_topic_publisher.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes\n'}
+[1.720661] (callboy) StdoutLine: {'line': b'copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/input_text_publisher.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes\n'}
+[1.721020] (callboy) StdoutLine: {'line': b'copying /home/unitree/callboy/ros2_ws/build/callboy/build/lib/callboy/nodes/__init__.py -> /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes\n'}
+[1.721895] (callboy) StdoutLine: {'line': b'byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/udp_audio_topic_publisher.py to udp_audio_topic_publisher.cpython-38.pyc\n'}
+[1.723604] (callboy) StdoutLine: {'line': b'byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/input_text_publisher.py to input_text_publisher.cpython-38.pyc\n'}
+[1.724635] (callboy) StdoutLine: {'line': b'byte-compiling /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__init__.py to __init__.cpython-38.pyc\n'}
+[1.725151] (callboy) StdoutLine: {'line': b'running install_data\n'}
+[1.725463] (callboy) StdoutLine: {'line': b'running install_egg_info\n'}
+[1.727776] (callboy) StdoutLine: {'line': b"removing '/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy-0.0.1-py3.8.egg-info' (and everything under it)\n"}
+[1.728332] (callboy) StdoutLine: {'line': b'Copying ../../build/callboy/callboy.egg-info to /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy-0.0.1-py3.8.egg-info\n'}
+[1.729875] (callboy) StdoutLine: {'line': b'running install_scripts\n'}
+[1.761361] (callboy) StdoutLine: {'line': b'Installing callboy_input_text script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy\n'}
+[1.761884] (callboy) StdoutLine: {'line': b'Installing callboy_ollama_planner script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy\n'}
+[1.762071] (callboy) StdoutLine: {'line': b'Installing callboy_sdk2_executor script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy\n'}
+[1.762266] (callboy) StdoutLine: {'line': b'Installing callboy_udp_audio_topic script to /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy\n'}
+[1.762992] (callboy) StdoutLine: {'line': b"writing list of installed files to '/home/unitree/callboy/ros2_ws/build/callboy/install.log'\n"}
+[1.812729] (callboy) CommandEnded: {'returncode': 0}
+[1.816126] (-) TimerEvent: {}
+[1.854044] (callboy) JobEnded: {'identifier': 'callboy', 'rc': 0}
+[1.856386] (-) EventReactorShutdown: {}

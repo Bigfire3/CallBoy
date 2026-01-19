@@ -17,5 +17,6 @@ callboy/nodes/__init__.py
 callboy/nodes/input_text_publisher.py
 callboy/nodes/ollama_planner.py
 callboy/nodes/sdk2_executor_node.py
+callboy/nodes/udp_audio_topic_publisher.py
 launch/callboy.launch.py
 resource/callboy

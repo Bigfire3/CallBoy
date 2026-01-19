@@ -25,6 +25,7 @@ setup(
             "callboy_input_text = callboy.nodes.input_text_publisher:main",
             "callboy_ollama_planner = callboy.nodes.ollama_planner:main",
             "callboy_sdk2_executor = callboy.nodes.sdk2_executor_node:main",
+            "callboy_udp_audio_topic = callboy.nodes.udp_audio_topic_publisher:main",
         ],
     },
 )
