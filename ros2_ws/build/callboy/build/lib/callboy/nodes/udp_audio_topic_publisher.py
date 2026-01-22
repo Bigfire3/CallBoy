@@ -17,7 +17,7 @@ class UdpAudioTopicPublisher(Node):
         self.declare_parameter("port", 5555)
         self.declare_parameter("local_ip", "192.168.123.164")
         self.declare_parameter("topic", "/g1/mics/pcm16")
-        self.declare_parameter("recv_bytes", 4096)
+        self.declare_parameter("recv_bytes", 65535)
         self.declare_parameter("header_skip_bytes", 0)
         self.declare_parameter("channels", 1)
         self.declare_parameter("sample_width_bytes", 2)
@@ -60,6 +60,10 @@ class UdpAudioTopicPublisher(Node):
         local_ip = self.get_parameter("local_ip").value
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        
+        # Increase receive buffer to prevent packet loss
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4 * 1024 * 1024)
+        
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("", port))
         mreq = struct.pack("4s4s", socket.inet_aton(mcast_group), socket.inet_aton(local_ip))

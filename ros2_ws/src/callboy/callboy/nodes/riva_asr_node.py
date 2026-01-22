@@ -8,6 +8,7 @@ from typing import Generator, Optional
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String, UInt8MultiArray
 
 
@@ -21,6 +22,8 @@ class RivaAsrNode(Node):
         self.declare_parameter("channels", 1)
         self.declare_parameter("chunk_ms", 100)
         self.declare_parameter("queue_max_chunks", 200)
+        self.declare_parameter("best_effort", True)
+        self.declare_parameter("qos_depth", 10)
 
         self.declare_parameter("server", os.environ.get("RIVA_SERVER", "localhost:50051"))
         self.declare_parameter("use_ssl", False)
@@ -35,7 +38,17 @@ class RivaAsrNode(Node):
         output_topic = self.get_parameter("output_topic").get_parameter_value().string_value
 
         self._pub = self.create_publisher(String, output_topic, 10)
-        self._sub = self.create_subscription(UInt8MultiArray, input_topic, self._on_audio, 10)
+
+        depth = int(self.get_parameter("qos_depth").value)
+        best_effort = bool(self.get_parameter("best_effort").value)
+        if depth <= 0:
+            depth = 10
+        audio_qos = QoSProfile(
+            history=HistoryPolicy.KEEP_LAST,
+            depth=depth,
+            reliability=ReliabilityPolicy.BEST_EFFORT if best_effort else ReliabilityPolicy.RELIABLE,
+        )
+        self._sub = self.create_subscription(UInt8MultiArray, input_topic, self._on_audio, audio_qos)
 
         self._buf = bytearray()
         self._stop = threading.Event()
