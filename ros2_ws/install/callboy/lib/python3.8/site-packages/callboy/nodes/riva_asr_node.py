@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import math
 import os
 import queue
+import struct
 import threading
 import time
 from typing import Generator, Optional
@@ -11,28 +13,37 @@ from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String, UInt8MultiArray
 
+from callboy.config import default_config_path, load_config
+
 
 class RivaAsrNode(Node):
     def __init__(self) -> None:
         super().__init__("riva_asr")
 
-        self.declare_parameter("input_topic", "/g1/mics/pcm16")
-        self.declare_parameter("output_topic", "callboy/input_text")
-        self.declare_parameter("sample_rate_hz", 16000)
-        self.declare_parameter("channels", 1)
+        self.declare_parameter("config_path", default_config_path())
+        cfg_file = self.get_parameter("config_path").get_parameter_value().string_value
+        cfg = load_config(cfg_file)
+
+        self.declare_parameter("input_topic", cfg.riva.input_topic)
+        self.declare_parameter("output_topic", cfg.riva.output_topic)
+        self.declare_parameter("sample_rate_hz", cfg.riva.sample_rate_hz)
+        self.declare_parameter("channels", cfg.riva.channels)
         self.declare_parameter("chunk_ms", 100)
         self.declare_parameter("queue_max_chunks", 200)
         self.declare_parameter("best_effort", True)
         self.declare_parameter("qos_depth", 10)
 
-        self.declare_parameter("server", os.environ.get("RIVA_SERVER", "localhost:50051"))
+        self.declare_parameter("server", cfg.riva.server)
         self.declare_parameter("use_ssl", False)
-        self.declare_parameter("language_code", "de-DE")
+        self.declare_parameter("language_code", cfg.riva.language_code)
         self.declare_parameter("model_name", "")
-        self.declare_parameter("enable_automatic_punctuation", True)
+        self.declare_parameter("enable_automatic_punctuation", cfg.riva.enable_automatic_punctuation)
         self.declare_parameter("profanity_filter", False)
-        self.declare_parameter("interim_results", True)
-        self.declare_parameter("print_interim", True)
+        self.declare_parameter("interim_results", cfg.riva.interim_results)
+        self.declare_parameter("print_interim", cfg.riva.print_interim)
+        self.declare_parameter("vad_threshold", cfg.riva.vad_threshold)
+        self.declare_parameter("wakeword", cfg.riva.wakeword)
+        self.declare_parameter("log_rms", cfg.riva.log_rms)
 
         input_topic = self.get_parameter("input_topic").get_parameter_value().string_value
         output_topic = self.get_parameter("output_topic").get_parameter_value().string_value
@@ -59,9 +70,11 @@ class RivaAsrNode(Node):
             max_chunks = 200
         self._q: "queue.Queue[Optional[bytes]]" = queue.Queue(maxsize=max_chunks)
 
+        self._last_rms_log = 0.0
+
         self.get_logger().info(
-            "Ready. Subscribed to %s; streaming to Riva (%s); publishing final text to %s."
-            % (input_topic, self.get_parameter("server").value, output_topic)
+            "Streaming to Riva (%s); wakeword: %r"
+            % (self.get_parameter("server").value, self.get_parameter("wakeword").value)
         )
 
         self._thread = threading.Thread(target=self._run_asr_loop, daemon=True)
@@ -95,6 +108,26 @@ class RivaAsrNode(Node):
     def _enqueue_chunk(self, chunk: bytes) -> None:
         if not chunk:
             return
+
+        # Simple RMS-based VAD / Noise Gate
+        threshold = float(self.get_parameter("vad_threshold").value)
+        if threshold > 0:
+            count = len(chunk) // 2
+            if count > 0:
+                # Optimized RMS calc if possible, but keeping it simple
+                shorts = struct.unpack("<%dh" % count, chunk)
+                sum_sq = sum(s * s for s in shorts)
+                rms = math.sqrt(sum_sq / count) / 32768.0
+                
+                now = time.time()
+                if bool(self.get_parameter("log_rms").value) and (now - self._last_rms_log > 2.0):
+                    self.get_logger().info(f"Audio RMS (Volume): {rms:.5f} (Gate: {threshold:.5f})")
+                    self._last_rms_log = now
+
+                if rms < threshold:
+                    # Send silent chunk instead of skipping to keep the stream alive
+                    chunk = b"\x00" * len(chunk)
+
         try:
             self._q.put_nowait(chunk)
         except queue.Full:
@@ -141,17 +174,33 @@ class RivaAsrNode(Node):
     def _print_interim(self, text: str) -> None:
         if not bool(self.get_parameter("print_interim").value):
             return
-        pad = " " * max(0, self._last_interim_len - len(text))
-        print("\r" + text + pad, end="", flush=True)
-        self._last_interim_len = len(text)
+        pad = " " * max(0, self._last_interim_len - len(text) - 11)
+        print("\r>> " + text + pad, end="", flush=True)
+        self._last_interim_len = len(text) + 11
 
     def _print_final(self, text: str) -> None:
         if self._last_interim_len > 0:
-            print("\r" + (" " * self._last_interim_len) + "\r", end="")
+            print("\r" + (" " * (self._last_interim_len + 10)) + "\r", end="")
             self._last_interim_len = 0
-        print(text, flush=True)
+        print("## " + text, flush=True)
 
     def _publish_final(self, text: str) -> None:
+        wakeword = str(self.get_parameter("wakeword").value).strip()
+        
+        if wakeword:
+            # Case-insensitive check for wakeword
+            idx = text.lower().find(wakeword.lower())
+            if idx == -1:
+                return  # Wakeword not found, do not publish
+            
+            # Extract content after wakeword
+            # We strip everything BEFORE the wakeword and the wakeword itself
+            text = text[idx + len(wakeword):].strip()
+            
+            # If nothing is left after stripping, we don't publish a blank command
+            if not text:
+                return
+
         msg = String()
         msg.data = text
         self._pub.publish(msg)
@@ -178,6 +227,8 @@ class RivaAsrNode(Node):
         profanity_filter = self.get_parameter("profanity_filter").get_parameter_value().bool_value
         interim_results = self.get_parameter("interim_results").get_parameter_value().bool_value
 
+        channels = int(self.get_parameter("channels").value)
+
         auth = riva.client.Auth(uri=server, use_ssl=use_ssl)
         asr_service = riva.client.ASRService(auth)
 
@@ -190,14 +241,14 @@ class RivaAsrNode(Node):
                 profanity_filter=profanity_filter,
                 enable_automatic_punctuation=enable_punct,
                 sample_rate_hertz=sample_rate_hz,
-                audio_channel_count=1,
+                audio_channel_count=channels,
             ),
             interim_results=interim_results,
         )
 
         self.get_logger().info(
-            "ASR streaming started (server=%s, language=%s, sample_rate_hz=%s)."
-            % (server, language_code, sample_rate_hz)
+            "ASR started (language=%s)."
+            % (language_code)
         )
 
         while rclpy.ok() and not self._stop.is_set():

@@ -95,8 +95,7 @@ class OllamaPlanner(Node):
         ollama_url = self.get_parameter("ollama_url").get_parameter_value().string_value
         ollama_model = self.get_parameter("ollama_model").get_parameter_value().string_value
         self.get_logger().info(
-            "Ready. callboy/input_text -> callboy/json via Ollama "
-            f"(model={ollama_model!r}, url={ollama_url!r})."
+            f"Planner ready (model={ollama_model!r})."
         )
 
         if requests is None:
@@ -154,8 +153,7 @@ class OllamaPlanner(Node):
 
         self._publish_json(obj)
         plan_json = json.dumps(obj, ensure_ascii=False)
-        self.get_logger().info(f"Generated plan: {plan_json}")
-        self.get_logger().info(f"Published plan JSON to callboy/json (len={len(plan_json)}).")
+        self.get_logger().info(f"Plan JSON: {plan_json}")
 
 
 def main() -> None:
