@@ -22,6 +22,12 @@ def generate_launch_description() -> LaunchDescription:
             # ),
             Node(
                 package="callboy",
+                executable="callboy_whisper_asr",
+                name="whisper_asr",
+                output="screen",
+            ),
+            Node(
+                package="callboy",
                 executable="callboy_ollama_planner",
                 name="ollama_planner",
                 output="screen",

@@ -8,6 +8,7 @@
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/sdk2_executor_node.py
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/input_text_publisher.py
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__init__.py
+/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/callboy_whisper_asr.py
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/ollama_planner.py
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/__pycache__/supported_commands.cpython-38.pyc
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/__pycache__/command_schema.cpython-38.pyc
@@ -19,6 +20,7 @@
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__pycache__/sdk2_executor_node.cpython-38.pyc
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__pycache__/input_text_publisher.cpython-38.pyc
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__pycache__/__init__.cpython-38.pyc
+/home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__pycache__/callboy_whisper_asr.cpython-38.pyc
 /home/unitree/callboy/ros2_ws/install/callboy/lib/python3.8/site-packages/callboy/nodes/__pycache__/ollama_planner.cpython-38.pyc
 /home/unitree/callboy/ros2_ws/install/callboy/share/ament_index/resource_index/packages/callboy
 /home/unitree/callboy/ros2_ws/install/callboy/share/callboy/package.xml
@@ -36,3 +38,4 @@
 /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy/callboy_sdk2_executor
 /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy/callboy_udp_audio_topic
 /home/unitree/callboy/ros2_ws/install/callboy/lib/callboy/callboy_wav_audio_topic
+/home/unitree/callboy/ros2_ws/install/callboy/lib/callboy/callboy_whisper_asr

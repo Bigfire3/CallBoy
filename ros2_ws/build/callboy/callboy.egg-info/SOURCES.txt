@@ -14,6 +14,7 @@ callboy/config.py
 callboy/sdk2_executor.py
 callboy/supported_commands.py
 callboy/nodes/__init__.py
+callboy/nodes/callboy_whisper_asr.py
 callboy/nodes/input_text_publisher.py
 callboy/nodes/ollama_planner.py
 callboy/nodes/riva_asr_node.py

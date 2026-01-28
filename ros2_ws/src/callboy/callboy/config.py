@@ -36,10 +36,25 @@ class RivaConfig:
 
 
 @dataclass(frozen=True)
+class WhisperConfig:
+    model_size: str = "small"
+    device: str = "cuda"
+    compute_type: str = "int8"
+    language: str = "de"
+    input_topic: str = "/g1/mics/pcm16"
+    output_topic: str = "callboy/input_text"
+    silence_threshold: int = 500
+    silence_duration: float = 1.0
+    min_speech_duration: float = 0.5
+    log_rms: bool = False
+
+
+@dataclass(frozen=True)
 class CallboyConfig:
     ollama: OllamaConfig
     sdk2: Sdk2Config
     riva: RivaConfig
+    whisper: WhisperConfig
 
 
 def _get_str(parser: configparser.ConfigParser, section: str, option: str, fallback: str) -> str:
@@ -120,4 +135,17 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         log_rms=_get_bool(parser, "riva", "log_rms", RivaConfig.log_rms),
     )
 
-    return CallboyConfig(ollama=ollama, sdk2=sdk2, riva=riva)
+    whisper = WhisperConfig(
+        model_size=_get_str(parser, "whisper", "model_size", WhisperConfig.model_size),
+        device=_get_str(parser, "whisper", "device", WhisperConfig.device),
+        compute_type=_get_str(parser, "whisper", "compute_type", WhisperConfig.compute_type),
+        language=_get_str(parser, "whisper", "language", WhisperConfig.language),
+        input_topic=_get_str(parser, "whisper", "input_topic", WhisperConfig.input_topic),
+        output_topic=_get_str(parser, "whisper", "output_topic", WhisperConfig.output_topic),
+        silence_threshold=_get_int(parser, "whisper", "silence_threshold", WhisperConfig.silence_threshold),
+        silence_duration=_get_float(parser, "whisper", "silence_duration", WhisperConfig.silence_duration),
+        min_speech_duration=_get_float(parser, "whisper", "min_speech_duration", WhisperConfig.min_speech_duration),
+        log_rms=_get_bool(parser, "whisper", "log_rms", WhisperConfig.log_rms),
+    )
+
+    return CallboyConfig(ollama=ollama, sdk2=sdk2, riva=riva, whisper=whisper)
