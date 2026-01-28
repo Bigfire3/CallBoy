@@ -51,7 +51,7 @@ class Sdk2ExecutorNode(Node):
         self._busy = False
 
         self._sub = self.create_subscription(String, "callboy/json", self._on_plan_json, 10)
-        self.get_logger().info("Ready. Subscribed to callboy/json.")
+        # self.get_logger().info("Ready. Subscribed to callboy/json.")
 
     def _make_cfg(self) -> ExecutorConfig:
         sdk2_cli_path = self.get_parameter("sdk2_cli_path").get_parameter_value().string_value
@@ -88,7 +88,7 @@ class Sdk2ExecutorNode(Node):
         if dropped:
             self.get_logger().warn(f"Dropped commands: {dropped}")
         if plan.unavailable:
-            self.get_logger().warn(f"Plan unavailable items: {plan.unavailable}")
+            self.get_logger().warn(f"\nNo plan available.")
 
         cfg = self._make_cfg()
         if not os.path.exists(cfg.sdk2_cli_path):
@@ -101,9 +101,7 @@ class Sdk2ExecutorNode(Node):
 
         wait_for_velocity = self.get_parameter("wait_for_velocity_duration").get_parameter_value().bool_value
 
-        self.get_logger().info(
-            f"Executing plan with {len(plan.commands)} commands via {cfg.sdk2_cli_path} (dry_run={dry_run}, wait_for_velocity_duration={wait_for_velocity})."
-        )
+        self.get_logger().info(f"Commands: {len(plan.commands)})")
 
         try:
             if wait_for_velocity:

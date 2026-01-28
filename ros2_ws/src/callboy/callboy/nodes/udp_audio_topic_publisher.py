@@ -40,8 +40,7 @@ class UdpAudioTopicPublisher(Node):
         self._thread = threading.Thread(target=self._recv_loop, daemon=True)
 
         self.get_logger().info(
-            "UDP->ROS2 audio publisher starting. "
-            "Set parameters 'channels', 'sample_width_bytes', 'header_skip_bytes' to match the stream."
+            "UDP->ROS2 audio publisher starting."
         )
         self._thread.start()
 

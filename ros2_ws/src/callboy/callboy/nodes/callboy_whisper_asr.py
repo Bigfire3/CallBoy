@@ -18,7 +18,6 @@ class CallboyWhisperASR(Node):
         # Load config
         try:
             self.cfg = load_config().whisper
-            self.get_logger().info(f"Loaded config: {self.cfg}")
         except Exception as e:
             self.get_logger().error(f"Failed to load config: {e}")
             raise e
@@ -51,6 +50,7 @@ class CallboyWhisperASR(Node):
         self.silence_start_time = None
         self.last_process_time = time.time()
         self.last_print_time = time.time()
+        self.last_topic_check = 0.0
         
         # ROS
         qos = QoSProfile(
@@ -83,6 +83,13 @@ class CallboyWhisperASR(Node):
         while self.running:
             time.sleep(0.1) # Check 10 times per second
             
+            # Check if topic has publishers every 5 seconds
+            now = time.time()
+            if now - self.last_topic_check > 5.0:
+                self.last_topic_check = now
+                if self.count_publishers(self.cfg.input_topic) == 0:
+                    self.get_logger().warning(f"No publishers found on topic '{self.cfg.input_topic}'. Is the audio source running?")
+
             with self.lock:
                 if len(self.buffer) == 0:
                     continue
@@ -152,13 +159,13 @@ class CallboyWhisperASR(Node):
         dur = time.time() - start_t
         
         if full_text:
-            self.get_logger().info(f"Transcribed ({dur:.2f}s): '{full_text}'")
+            self.get_logger().info(f"\n'{full_text}' ({dur:.2f}s)")
             # Publish
             msg = String()
             msg.data = full_text
             self.pub_text.publish(msg)
         else:
-             self.get_logger().info("Transcribed: <empty>")
+             self.get_logger().info("No speech recognized!")
 
     def destroy_node(self):
         self.running = False
