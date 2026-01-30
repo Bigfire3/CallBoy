@@ -101,7 +101,7 @@ class Sdk2ExecutorNode(Node):
 
         wait_for_velocity = self.get_parameter("wait_for_velocity_duration").get_parameter_value().bool_value
 
-        self.get_logger().info(f"Commands: {len(plan.commands)})")
+        self.get_logger().info(f"Commands: {len(plan.commands)}")
 
         try:
             if wait_for_velocity:
@@ -125,7 +125,7 @@ class Sdk2ExecutorNode(Node):
             if len(err) > 400:
                 err = err[:400] + "..."
             self.get_logger().info(
-                f"{res.command.name} rc={res.returncode} stdout={out!r} stderr={err!r}"
+                f"{res.command.name}"
             )
 
         with self._lock:

@@ -2,11 +2,8 @@ Metadata-Version: 2.1
 Name: callboy
 Version: 0.0.1
 Summary: ROS2 nodes: CLI input -> Ollama planning -> SDK2 command execution for Unitree G1.
-Home-page: UNKNOWN
 Maintainer: unitree
 Maintainer-email: unitree@example.com
 License: Apache-2.0
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: setuptools
+Requires-Dist: faster-whisper

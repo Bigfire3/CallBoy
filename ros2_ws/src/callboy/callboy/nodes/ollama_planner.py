@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List
 
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
 from callboy.config import default_config_path, load_config
-from callboy.supported_commands import SUPPORTED_COMMANDS
 
 try:
     import requests  # type: ignore
@@ -22,46 +21,86 @@ def _normalize_text(text: str) -> str:
 
 
 def _build_prompt(*, text: str, normalized: str) -> str:
-    supported = ", ".join(SUPPORTED_COMMANDS)
     return (
         "You are a strict command planner for a Unitree G1 robot.\n"
-        "Convert the user's German instruction into a JSON object.\n\n"
+        "Convert the user's instruction into a single JSON object.\n\n"
         "Rules:\n"
-        "- Output ONLY JSON.\n"
-        "- Use only supported command names.\n"
-        "- If you cannot map part of the request, add it to 'unavailable'.\n"
-        "- Prefer safe minimal plans.\n\n"
-        "Supported commands:\n"
-        "- set_velocity (requires param: \"vx vy omega duration\")\n"
-        "- set_stand_height (requires param: \"height\")\n"
-        "- set_swing_height (requires param: \"height\")\n"
-        "- set_fsm_id (requires param: \"id\")\n"
+        "- Output ONLY valid JSON. No markdown, no code fences, no extra text.\n"
+        "- Use ONLY the allowed command names listed below.\n"
+        "- Prefer safe, minimal plans.\n"
+        "- If the user intent is unclear, output an empty plan.\n\n"
+        "Motion convention:\n"
+        "- In set_velocity, omega is rotation in rad/s. omega > 0 means LEFT. omega < 0 means RIGHT.\n\n"
+        "Allowed commands:\n"
+        "- set_velocity (param: \"vx vy omega duration\" where vx is forward m/s, vy is lateral m/s, omega is rad/s, duration is seconds)\n"
         "- shake_hand (optional param: \"0\" or \"1\")\n"
-        f"- other available names: {supported}\n\n"
-        "For turning/motion use set_velocity with a finite duration and always follow with stop_move.\n"
-        "German hints:\n"
-        "- 'drehe dich nach links' / 'links drehen' => omega > 0\n"
-        "- 'drehe dich nach rechts' / 'rechts drehen' => omega < 0\n"
-        "set_velocity details:\n"
-        "- vx: forward velocity (m/s)\n"
-        "- vy: lateral velocity (m/s)\n"
-        "- omega: yaw velocity (rad/s)\n"
-        "- duration: seconds to move at this velocity\n\n"
-        "Examples (do not output these literally, just follow the pattern):\n"
-        "User: 'geh zwei meter vorwärts'\n"
-        "JSON: {\"commands\":[{\"name\":\"set_velocity\",\"param\":\"0.5 0 0 4.0\"},{\"name\":\"stop_move\"}],\"unavailable\":[]}\n"
-        "User: 'drehe dich nach links'\n"
-        "JSON: {\"commands\":[{\"name\":\"set_velocity\",\"param\":\"0 0 0.6 1.2\"},{\"name\":\"stop_move\"}],\"unavailable\":[]}\n"
-        "User: 'drehe dich nach rechts'\n"
-        "JSON: {\"commands\":[{\"name\":\"set_velocity\",\"param\":\"0 0 -0.6 1.2\"},{\"name\":\"stop_move\"}],\"unavailable\":[]}\n\n"
-        "Return format:\n"
+        "- wave_hand\n"
+        "- wave_hand_with_turn\n\n"
+        "Safety:\n"
+        "- For any set_velocity command, ALWAYS append a stop_move command immediately after.\n"
+        "- stop_move is a safety command and may only be used right after set_velocity.\n\n"
+        "Return format (strict):\n"
         "{\n"
-        "  \"commands\": [{\"name\": \"stand_up\"}, {\"name\": \"shake_hand\"}],\n"
-        "  \"unavailable\": []\n"
+        "  \"commands\": [{\"name\": \"shake_hand\"}]\n"
         "}\n\n"
         f"User text: {text!r}\n"
-        f"Normalized: {normalized!r}\n"
     )
+
+
+def _truncate_for_log(text: str, *, max_chars: int = 2000) -> str:
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars] + "... [truncated]"
+
+
+ALLOWED_COMMANDS = {
+    "set_velocity",
+    "shake_hand",
+    "wave_hand",
+    "wave_hand_with_turn",
+}
+
+
+def _normalize_commands(obj: Dict[str, Any]) -> List[Dict[str, Any]]:
+    raw = obj.get("commands")
+    if not isinstance(raw, list):
+        return []
+
+    normalized: List[Dict[str, Any]] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("name")
+        if not isinstance(name, str):
+            continue
+        name = name.strip()
+        if name not in ALLOWED_COMMANDS:
+            continue
+
+        out_item: Dict[str, Any] = {"name": name}
+        if name == "set_velocity":
+            param = item.get("param")
+            if isinstance(param, str) and param.strip():
+                out_item["param"] = param.strip()
+            else:
+                # Invalid velocity command without parameters.
+                continue
+        else:
+            # Gesture commands may optionally include a param.
+            param = item.get("param")
+            if isinstance(param, str) and param.strip():
+                out_item["param"] = param.strip()
+
+        normalized.append(out_item)
+
+    # Safety: automatically append stop_move after each set_velocity.
+    safe: List[Dict[str, Any]] = []
+    for cmd in normalized:
+        safe.append(cmd)
+        if cmd.get("name") == "set_velocity":
+            safe.append({"name": "stop_move"})
+
+    return safe
 
 
 def _extract_json(text: str) -> Dict[str, Any]:
@@ -92,7 +131,6 @@ class OllamaPlanner(Node):
         self._sub = self.create_subscription(String, "callboy/input_text", self._on_text, 10)
         self._pub = self.create_publisher(String, "callboy/json", 10)
 
-        ollama_url = self.get_parameter("ollama_url").get_parameter_value().string_value
         ollama_model = self.get_parameter("ollama_model").get_parameter_value().string_value
         self.get_logger().info(
             f"Planner ready (model={ollama_model!r})."
@@ -139,21 +177,26 @@ class OllamaPlanner(Node):
 
         try:
             model_out = self._ollama_generate(prompt)
+            self.get_logger().info(f"Ollama raw: {_truncate_for_log(model_out)}")
             obj = _extract_json(model_out)
+            if not isinstance(obj, dict):
+                raise ValueError("Model output JSON is not an object")
         except Exception as e:
             self.get_logger().error(f"Ollama planning failed: {e}")
             self._publish_json({"commands": [], "unavailable": ["ollama_error"]})
             return
 
-        # Ensure minimal schema
-        if "commands" not in obj:
-            obj["commands"] = []
-        if "unavailable" not in obj:
-            obj["unavailable"] = []
+        # Normalize and restrict commands to the allowed set.
+        filtered_commands = _normalize_commands(obj)
+        obj = {
+            "commands": filtered_commands,
+            "unavailable": obj.get("unavailable", []) if isinstance(obj.get("unavailable"), list) else [],
+        }
 
         self._publish_json(obj)
         plan_json = json.dumps(obj, ensure_ascii=False)
-        self.get_logger().info(f"Plan JSON: {plan_json}")
+        self.get_logger().info(f"{plan_json}")
+        self.get_logger().info(f"{normalized}")
 
 
 def main() -> None:

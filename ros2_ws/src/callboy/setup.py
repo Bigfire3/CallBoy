@@ -14,7 +14,7 @@ setup(
         ("share/" + package_name, ["package.xml"]),
         (os.path.join("share", package_name, "launch"), glob("launch/*.launch.py")),
     ],
-    install_requires=["setuptools"],
+    install_requires=["setuptools", "faster-whisper"],
     zip_safe=True,
     maintainer="unitree",
     maintainer_email="unitree@example.com",
