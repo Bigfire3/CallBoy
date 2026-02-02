@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import rclpy
 from rclpy.node import Node
@@ -14,43 +15,41 @@ try:
     import requests  # type: ignore
 except Exception:  # pragma: no cover
     requests = None  # type: ignore
+def _build_prompt(*, prompt_template: str, text: str) -> str:
+    template = prompt_template.rstrip() + "\n\n"
+    return template + f"User text: {text!r}\n"
 
 
-def _normalize_text(text: str) -> str:
-    return " ".join(text.strip().lower().split())
+def _load_prompt_template(*, prompt_file: str, config_path: str) -> str:
+    prompt_file = (prompt_file or "").strip()
+    if not prompt_file:
+        prompt_file = "prompts/default.txt"
 
+    candidates: List[str]
+    if os.path.isabs(prompt_file):
+        candidates = [prompt_file]
+    else:
+        candidates = [os.path.join(os.path.dirname(config_path), prompt_file)]
+        try:
+            from ament_index_python.packages import get_package_share_directory  # type: ignore
 
-def _build_prompt(*, text: str, normalized: str) -> str:
-    return (
-        "You are a strict command planner for a Unitree G1 robot.\n"
-        "Convert the user's instruction into a single JSON object.\n\n"
-        "Rules:\n"
-        "- Output ONLY valid JSON. No markdown, no code fences, no extra text.\n"
-        "- Use ONLY the allowed command names listed below.\n"
-        "- Prefer safe, minimal plans.\n"
-        "- If the user intent is unclear, output an empty plan.\n\n"
-        "Motion convention:\n"
-        "- In set_velocity, omega is rotation in rad/s. omega > 0 means LEFT. omega < 0 means RIGHT.\n\n"
-        "Allowed commands:\n"
-        "- set_velocity (param: \"vx vy omega duration\" where vx is forward m/s, vy is lateral m/s, omega is rad/s, duration is seconds)\n"
-        "- shake_hand (optional param: \"0\" or \"1\")\n"
-        "- wave_hand\n"
-        "- wave_hand_with_turn\n\n"
-        "Safety:\n"
-        "- For any set_velocity command, ALWAYS append a stop_move command immediately after.\n"
-        "- stop_move is a safety command and may only be used right after set_velocity.\n\n"
-        "Return format (strict):\n"
-        "{\n"
-        "  \"commands\": [{\"name\": \"shake_hand\"}]\n"
-        "}\n\n"
-        f"User text: {text!r}\n"
+            share_dir = get_package_share_directory("callboy")
+            candidates.append(os.path.join(share_dir, prompt_file))
+            candidates.append(os.path.join(share_dir, "prompts", prompt_file))
+        except Exception:
+            pass
+
+    for path in candidates:
+        if path and os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                template = f.read()
+            if not template.strip():
+                raise RuntimeError(f"Prompt file is empty: {path}")
+            return template
+
+    raise RuntimeError(
+        f"Prompt file not found: planner.prompt_file={prompt_file!r} (checked: {candidates})"
     )
-
-
-def _truncate_for_log(text: str, *, max_chars: int = 2000) -> str:
-    if len(text) <= max_chars:
-        return text
-    return text[:max_chars] + "... [truncated]"
 
 
 ALLOWED_COMMANDS = {
@@ -122,7 +121,14 @@ class OllamaPlanner(Node):
         super().__init__("ollama_planner")
 
         self.declare_parameter("config_path", default_config_path())
-        cfg = load_config(self.get_parameter("config_path").get_parameter_value().string_value)
+        config_path = self.get_parameter("config_path").get_parameter_value().string_value
+        cfg = load_config(config_path)
+
+        self._prompt_template = _load_prompt_template(
+            prompt_file=cfg.planner.prompt_file,
+            config_path=config_path,
+        )
+        self.get_logger().info(f"Planner prompt loaded (planner.prompt_file={cfg.planner.prompt_file!r}).")
 
         self.declare_parameter("ollama_url", cfg.ollama.url)
         self.declare_parameter("ollama_model", cfg.ollama.model)
@@ -172,18 +178,16 @@ class OllamaPlanner(Node):
 
     def _on_text(self, msg: String) -> None:
         text = msg.data
-        normalized = _normalize_text(text)
-        prompt = _build_prompt(text=text, normalized=normalized)
+        prompt = _build_prompt(prompt_template=self._prompt_template, text=text)
 
         try:
             model_out = self._ollama_generate(prompt)
-            self.get_logger().info(f"Ollama raw: {_truncate_for_log(model_out)}")
+            self.get_logger().info(f"Ollama raw:\n{model_out}")
             obj = _extract_json(model_out)
             if not isinstance(obj, dict):
                 raise ValueError("Model output JSON is not an object")
         except Exception as e:
             self.get_logger().error(f"Ollama planning failed: {e}")
-            self._publish_json({"commands": [], "unavailable": ["ollama_error"]})
             return
 
         # Normalize and restrict commands to the allowed set.
@@ -196,7 +200,6 @@ class OllamaPlanner(Node):
         self._publish_json(obj)
         plan_json = json.dumps(obj, ensure_ascii=False)
         self.get_logger().info(f"{plan_json}")
-        self.get_logger().info(f"{normalized}")
 
 
 def main() -> None:

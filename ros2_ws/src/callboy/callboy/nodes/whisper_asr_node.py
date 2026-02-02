@@ -11,7 +11,7 @@ from callboy.config import load_config
 # Constants that are now defaults, config overrides allow tuning
 DEFAULT_SAMPLE_RATE = 16000
 
-class CallboyWhisperASR(Node):
+class WhisperAsrNode(Node):
     def __init__(self):
         super().__init__("callboy_whisper_asr")
         
@@ -117,7 +117,7 @@ class CallboyWhisperASR(Node):
             
             if is_loud:
                 if not self.is_speaking:
-                    self.get_logger().info("Speech detected...")
+                    self.get_logger().info("Listening...")
                     self.is_speaking = True
                 self.silence_start_time = None
             else:
@@ -127,7 +127,7 @@ class CallboyWhisperASR(Node):
                     
                     # Check if silence is long enough
                     if (time.time() - self.silence_start_time) > self.silence_duration:
-                        self.get_logger().info("End of speech, transcribing...")
+                        self.get_logger().info("Transcribing...")
                         
                         # Grab valid speech segment
                         self.transcribe_buffer(audio_data)
@@ -159,7 +159,7 @@ class CallboyWhisperASR(Node):
         dur = time.time() - start_t
         
         if full_text:
-            self.get_logger().info(f"\n'{full_text}' ({dur:.2f}s)")
+            self.get_logger().info(f"'{full_text}' ({dur:.2f}s)")
             # Publish
             msg = String()
             msg.data = full_text
@@ -174,7 +174,7 @@ class CallboyWhisperASR(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = CallboyWhisperASR()
+    node = WhisperAsrNode()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

@@ -50,8 +50,16 @@ class WhisperConfig:
 
 
 @dataclass(frozen=True)
+class PlannerConfig:
+    # Path to a prompt file used by the LLM planner.
+    # May be absolute or relative (see nodes for resolution rules).
+    prompt_file: str = ""
+
+
+@dataclass(frozen=True)
 class CallboyConfig:
     ollama: OllamaConfig
+    planner: PlannerConfig
     sdk2: Sdk2Config
     riva: RivaConfig
     whisper: WhisperConfig
@@ -114,6 +122,10 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         model=_get_str(parser, "ollama", "model", OllamaConfig.model),
     )
 
+    planner = PlannerConfig(
+        prompt_file=_get_str(parser, "planner", "prompt_file", PlannerConfig.prompt_file),
+    )
+
     sdk2 = Sdk2Config(
         cli_path=_get_str(parser, "sdk2", "cli_path", Sdk2Config.cli_path),
         network_interface=_get_str(parser, "sdk2", "network_interface", Sdk2Config.network_interface),
@@ -148,4 +160,4 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         log_rms=_get_bool(parser, "whisper", "log_rms", WhisperConfig.log_rms),
     )
 
-    return CallboyConfig(ollama=ollama, sdk2=sdk2, riva=riva, whisper=whisper)
+    return CallboyConfig(ollama=ollama, planner=planner, sdk2=sdk2, riva=riva, whisper=whisper)
