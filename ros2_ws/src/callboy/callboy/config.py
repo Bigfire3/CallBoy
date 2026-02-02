@@ -46,6 +46,7 @@ class WhisperConfig:
     silence_threshold: int = 500
     silence_duration: float = 1.0
     min_speech_duration: float = 0.5
+    wakeword: str = ""
     log_rms: bool = False
 
 
@@ -157,6 +158,7 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         silence_threshold=_get_int(parser, "whisper", "silence_threshold", WhisperConfig.silence_threshold),
         silence_duration=_get_float(parser, "whisper", "silence_duration", WhisperConfig.silence_duration),
         min_speech_duration=_get_float(parser, "whisper", "min_speech_duration", WhisperConfig.min_speech_duration),
+        wakeword=_get_str(parser, "whisper", "wakeword", WhisperConfig.wakeword),
         log_rms=_get_bool(parser, "whisper", "log_rms", WhisperConfig.log_rms),
     )
 

@@ -1,6 +1,7 @@
 import time
 import threading
 import numpy as np
+import re
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
@@ -34,6 +35,7 @@ class WhisperAsrNode(Node):
         self.silence_duration = self.cfg.silence_duration
         self.min_speech_duration = self.cfg.min_speech_duration
         self.log_rms = self.cfg.log_rms
+        self.wakeword = (getattr(self.cfg, "wakeword", "") or "").strip()
 
         self.get_logger().info(f"Loading Whisper Model: {model_size} on {device} ({compute_type})...")
         try:
@@ -72,6 +74,46 @@ class WhisperAsrNode(Node):
         self.process_thread.start()
         
         self.get_logger().info("Whisper ASR Node Ready. Waiting for audio...")
+
+    def _contains_wakeword(self, text: str) -> bool:
+        if not self.wakeword:
+            return True
+
+        ww = self.wakeword.casefold()
+        t = (text or "").casefold()
+
+        # If wakeword is a single token, prefer word-boundary matching.
+        if " " not in ww:
+            return re.search(rf"\b{re.escape(ww)}\b", t) is not None
+        return ww in t
+
+    def _strip_wakeword(self, text: str) -> str:
+        if not self.wakeword:
+            return (text or "").strip()
+
+        ww = self.wakeword.casefold()
+        t = (text or "")
+        t_cf = t.casefold()
+
+        if " " not in ww:
+            # Remove token-like wakeword occurrences, keep rest.
+            pattern = re.compile(rf"\b{re.escape(ww)}\b", re.IGNORECASE)
+            out = pattern.sub(" ", t)
+        else:
+            # Multi-word wakeword: remove occurrences as substring (case-insensitive).
+            # We do this by replacing in the casefolded space-normalized domain, but keep it simple here.
+            # Practical expectation: wakeword is a single token (e.g. "Robert").
+            out = t
+            idx = t_cf.find(ww)
+            while idx != -1:
+                out = out[:idx] + " " + out[idx + len(self.wakeword):]
+                t_cf = out.casefold()
+                idx = t_cf.find(ww)
+
+        # Clean up leftover punctuation/whitespace.
+        out = re.sub(r"\s+", " ", out).strip()
+        out = re.sub(r"^[\s,.:;!?]+", "", out).strip()
+        return out
 
     def audio_callback(self, msg):
         """Receive raw PCM16 (Little Endian) bytes."""
@@ -160,10 +202,21 @@ class WhisperAsrNode(Node):
         
         if full_text:
             self.get_logger().info(f"'{full_text}' ({dur:.2f}s)")
-            # Publish
-            msg = String()
-            msg.data = full_text
-            self.pub_text.publish(msg)
+
+            if self._contains_wakeword(full_text):
+                cmd_text = self._strip_wakeword(full_text)
+                if cmd_text:
+                    msg = String()
+                    msg.data = cmd_text
+                    self.pub_text.publish(msg)
+                else:
+                    self.get_logger().info(
+                        f"Wakeword {self.wakeword!r} detected but no command text; not publishing."
+                    )
+            else:
+                self.get_logger().info(
+                    f"Wakeword {self.wakeword!r} not detected; not publishing."
+                )
         else:
              self.get_logger().info("No speech recognized!")
 

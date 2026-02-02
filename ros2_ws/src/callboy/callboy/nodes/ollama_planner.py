@@ -193,8 +193,7 @@ class OllamaPlanner(Node):
         # Normalize and restrict commands to the allowed set.
         filtered_commands = _normalize_commands(obj)
         obj = {
-            "commands": filtered_commands,
-            "unavailable": obj.get("unavailable", []) if isinstance(obj.get("unavailable"), list) else [],
+            "commands": filtered_commands
         }
 
         self._publish_json(obj)
