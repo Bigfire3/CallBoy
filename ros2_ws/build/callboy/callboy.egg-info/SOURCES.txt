@@ -22,4 +22,5 @@ callboy/nodes/udp_audio_topic_publisher.py
 callboy/nodes/whisper_asr_node.py
 launch/callboy.launch.py
 prompts/default.txt
+prompts/llama-3.1.txt
 resource/callboy
