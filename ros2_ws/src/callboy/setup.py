@@ -29,7 +29,6 @@ setup(
             "callboy_udp_audio_topic = callboy.nodes.udp_audio_topic_publisher:main",
             "callboy_riva_asr = callboy.nodes.riva_asr_node:main",
             "callboy_whisper_asr = callboy.nodes.whisper_asr_node:main",
-            "callboy_wav_audio_topic = callboy.nodes.wav_audio_topic_publisher:main",
         ],
     },
 )
