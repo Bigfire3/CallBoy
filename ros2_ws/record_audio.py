@@ -58,7 +58,7 @@ def main(args=None):
             print("Keine Daten empfangen!")
         else:
             print(f"Speichere {len(recorder.frames)} Chunks in 'test_audio.wav'...")
-            # Parameter basierend auf Standard Unitree/Riva config: 16kHz, 1 Kanal, 16-bit
+            # Parameter: 16kHz, 1 Kanal, 16-bit
             wf = wave.open("test_audio.wav", 'wb')
             wf.setnchannels(1)
             wf.setsampwidth(2) # 16 bit = 2 bytes

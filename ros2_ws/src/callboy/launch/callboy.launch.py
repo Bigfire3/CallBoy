@@ -14,12 +14,6 @@ def generate_launch_description() -> LaunchDescription:
                 name="udp_audio_topic",
                 output="screen",
             ),
-            # Node(
-            #     package="callboy",
-            #     executable="callboy_riva_asr",
-            #     name="riva_asr",
-            #     output="screen",
-            # ),
             Node(
                 package="callboy",
                 executable="callboy_whisper_asr",

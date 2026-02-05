@@ -27,7 +27,6 @@ setup(
             "callboy_ollama_planner = callboy.nodes.ollama_planner:main",
             "callboy_sdk2_executor = callboy.nodes.sdk2_executor_node:main",
             "callboy_udp_audio_topic = callboy.nodes.udp_audio_topic_publisher:main",
-            "callboy_riva_asr = callboy.nodes.riva_asr_node:main",
             "callboy_whisper_asr = callboy.nodes.whisper_asr_node:main",
         ],
     },

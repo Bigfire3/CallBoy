@@ -20,22 +20,6 @@ class Sdk2Config:
 
 
 @dataclass(frozen=True)
-class RivaConfig:
-    server: str = "localhost:50051"
-    language_code: str = "de-DE"
-    sample_rate_hz: int = 16000
-    channels: int = 1
-    interim_results: bool = True
-    print_interim: bool = True
-    enable_automatic_punctuation: bool = False
-    input_topic: str = "/g1/mics/pcm16"
-    output_topic: str = "callboy/input_text"
-    vad_threshold: float = 0.005
-    wakeword: str = ""
-    log_rms: bool = False
-
-
-@dataclass(frozen=True)
 class WhisperConfig:
     model_size: str = "small"
     device: str = "cuda"
@@ -62,7 +46,6 @@ class CallboyConfig:
     ollama: OllamaConfig
     planner: PlannerConfig
     sdk2: Sdk2Config
-    riva: RivaConfig
     whisper: WhisperConfig
 
 
@@ -133,21 +116,6 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         dry_run=_get_bool(parser, "sdk2", "dry_run", Sdk2Config.dry_run),
     )
 
-    riva = RivaConfig(
-        server=_get_str(parser, "riva", "server", RivaConfig.server),
-        language_code=_get_str(parser, "riva", "language_code", RivaConfig.language_code),
-        sample_rate_hz=_get_int(parser, "riva", "sample_rate_hz", RivaConfig.sample_rate_hz),
-        channels=_get_int(parser, "riva", "channels", RivaConfig.channels),
-        interim_results=_get_bool(parser, "riva", "interim_results", RivaConfig.interim_results),
-        print_interim=_get_bool(parser, "riva", "print_interim", RivaConfig.print_interim),
-        enable_automatic_punctuation=_get_bool(parser, "riva", "enable_automatic_punctuation", RivaConfig.enable_automatic_punctuation),
-        input_topic=_get_str(parser, "riva", "input_topic", RivaConfig.input_topic),
-        output_topic=_get_str(parser, "riva", "output_topic", RivaConfig.output_topic),
-        vad_threshold=_get_float(parser, "riva", "vad_threshold", RivaConfig.vad_threshold),
-        wakeword=_get_str(parser, "riva", "wakeword", RivaConfig.wakeword),
-        log_rms=_get_bool(parser, "riva", "log_rms", RivaConfig.log_rms),
-    )
-
     whisper = WhisperConfig(
         model_size=_get_str(parser, "whisper", "model_size", WhisperConfig.model_size),
         device=_get_str(parser, "whisper", "device", WhisperConfig.device),
@@ -162,4 +130,4 @@ def load_config(path: Optional[str] = None) -> CallboyConfig:
         log_rms=_get_bool(parser, "whisper", "log_rms", WhisperConfig.log_rms),
     )
 
-    return CallboyConfig(ollama=ollama, planner=planner, sdk2=sdk2, riva=riva, whisper=whisper)
+    return CallboyConfig(ollama=ollama, planner=planner, sdk2=sdk2, whisper=whisper)
