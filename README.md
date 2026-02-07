@@ -8,7 +8,7 @@ The components are designed so that audio (PCM16) is fed into ROS 2 from a ROS t
 
 ```mermaid
 flowchart TD
-    MIC(("UDP Audiostream")) --> UDP["udp_audio_topic_publisher"]
+    START(["Microphone Array"]) -->|"UDP Audiostream"| UDP["udp_audio_topic_publisher"]
     UDP -->|"/g1/mics/pcm16"| ASR["whisper_asr_node"]
     ASR -->|"input_text"| PLAN["ollama_planner"]
     PLAN -->|"plan/json"| EXEC["sdk2_executor_node"]
