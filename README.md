@@ -11,8 +11,8 @@ flowchart TD
     MIC(("UDP Audiostream")) --> UDP["udp_audio_topic_publisher"]
     UDP -->|"/g1/mics/pcm16"| ASR["whisper_asr_node"]
     ASR -->|"input_text"| PLAN["ollama_planner"]
-    PLAN -->|"plan/json"| EXEC["sdk2_executor"]
-    EXEC -->|Subprocess| SDK["Unitree SDK2 CLI"]
+    PLAN -->|"plan/json"| EXEC["sdk2_executor_node"]
+    EXEC -->|Subprocess| SDK["g1_loco_client (SDK2)"]
 ```
 
 Standard flow in launch:
