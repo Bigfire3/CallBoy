@@ -7,12 +7,12 @@ The components are designed so that audio (PCM16) is fed into ROS 2 from a ROS t
 ## Architecture (Data Flow)
 
 ```mermaid
-graph TD
-    UDP[callboy_udp_audio_topic] -->|/g1/mics/pcm16| ASR[callboy_whisper_asr]
-    ASR -->|callboy/input_text| PLAN[callboy_ollama_planner]
-    IN[callboy_input_text] -.->|callboy/input_text| PLAN
-    PLAN -->|callboy/json| EXEC[callboy_sdk2_executor]
-    EXEC -->|Subprocess| SDK[Unitree SDK2 CLI]
+flowchart TD
+    UDP["callboy_udp_audio_topic"] -->|"audio stream"| ASR["callboy_whisper_asr"]
+    ASR -->|"input_text"| PLAN["callboy_ollama_planner"]
+    IN["callboy_input_text"] -.->|"manual text"| PLAN
+    PLAN -->|"json plan"| EXEC["callboy_sdk2_executor"]
+    EXEC -->|"subprocess"| SDK["Unitree SDK2 CLI"]
 ```
 
 Standard flow in launch:
