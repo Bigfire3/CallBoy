@@ -134,9 +134,9 @@ class OllamaPlanner(Node):
         self.declare_parameter("ollama_model", cfg.ollama.model)
         self.declare_parameter("timeout_s", 60.0)
 
-        self._sub = self.create_subscription(String, "callboy/input_text", self._on_text, 10)
-        self._pub = self.create_publisher(String, "callboy/json", 10)
-
+        self._sub = self.create_subscription(String, "/plan/input_text", self._on_text, 10)
+        self._pub = self.create_publisher(String, "/plan/json", 10)
+    
         ollama_model = self.get_parameter("ollama_model").get_parameter_value().string_value
         self.get_logger().info(
             f"Planner ready (model={ollama_model!r})."

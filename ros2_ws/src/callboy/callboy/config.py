@@ -26,7 +26,7 @@ class WhisperConfig:
     compute_type: str = "int8"
     language: str = "de"
     input_topic: str = "/g1/mics/pcm16"
-    output_topic: str = "callboy/input_text"
+    output_topic: str = "/plan/input_text"
     silence_threshold: int = 500
     silence_duration: float = 1.0
     min_speech_duration: float = 0.5

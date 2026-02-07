@@ -10,7 +10,7 @@ The components are designed so that audio (PCM16) is fed into ROS 2 from a ROS t
 flowchart TD
     START(["Microphone Array"]) -->|"UDP Audiostream"| UDP["udp_audio_topic_publisher"]
     UDP -->|"/g1/mics/pcm16"| ASR["whisper_asr_node"]
-    ASR -->|"/input_text"| PLAN["ollama_planner"]
+    ASR -->|"/plan/input_text"| PLAN["ollama_planner"]
     PLAN -->|"/plan/json"| EXEC["sdk2_executor_node"]
     EXEC -->|Subprocess| SDK["g1_loco_client (SDK2)"]
 ```
@@ -20,11 +20,11 @@ Standard flow in launch:
 1. **Audio-In**: `callboy_udp_audio_topic`
    - UDP Multicast → ROS Topic `/g1/mics/pcm16` (`std_msgs/UInt8MultiArray`, PCM16 little-endian)
 2. **ASR**: `callboy_whisper_asr`
-   - `/g1/mics/pcm16` → `callboy/input_text` (`std_msgs/String`)
+   - `/g1/mics/pcm16` → `/plan/input_text` (`std_msgs/String`)
 3. **Planner**: `callboy_ollama_planner`
-   - `callboy/input_text` → `callboy/json` (`std_msgs/String`, JSON)
+   - `/plan/input_text` → `/plan/json` (`std_msgs/String`, JSON)
 4. **Executor**: `callboy_sdk2_executor`
-   - `callboy/json` → SDK2 CLI calls (subprocess)
+   - `/plan/json` → SDK2 CLI calls (subprocess)
 
 ## Workspace Structure
 
@@ -73,7 +73,7 @@ ros2 launch callboy callboy.launch.py
 The launch file starts by default:
 
 - `callboy_udp_audio_topic` (UDP → `/g1/mics/pcm16`)
-- `callboy_whisper_asr` (ASR → `callboy/input_text`)
+- `callboy_whisper_asr` (ASR → `/plan/input_text`)
 - `callboy_ollama_planner` (text → JSON)
 - `callboy_sdk2_executor` (JSON → SDK2 CLI)
 
@@ -122,17 +122,17 @@ Important parameters:
 
 ### `callboy_whisper_asr` (Whisper ASR)
 
-Subscribes to `whisper.input_topic` (default: `/g1/mics/pcm16`) and publishes recognized text on `whisper.output_topic` (default: `callboy/input_text`).
+Subscribes to `whisper.input_topic` (default: `/g1/mics/pcm16`) and publishes recognized text on `whisper.output_topic` (default: `/plan/input_text`).
 
 Features:
 
 - RMS-based VAD (silence threshold + silence duration), followed by transcription.
-- Optional wakeword: without wakeword, **nothing** is published to `callboy/input_text`.
+- Optional wakeword: without wakeword, **nothing** is published to `/plan/input_text`.
 - Model: `faster-whisper` (`WhisperModel`) – fallback to CPU `int8` on GPU error.
 
 ### `callboy_ollama_planner` (Text → JSON)
 
-Subscribes to `callboy/input_text` and publishes `callboy/json`.
+Subscribes to `/plan/input_text` and publishes `/plan/json`.
 
 Important:
 
@@ -151,7 +151,7 @@ Output format is a JSON object like:
 
 ### `callboy_sdk2_executor` (JSON → SDK2 CLI)
 
-Subscribes to `callboy/json`, validates against `SUPPORTED_COMMANDS`, and executes commands sequentially.
+Subscribes to `/plan/json`, validates against `SUPPORTED_COMMANDS`, and executes commands sequentially.
 
 Important parameters:
 
@@ -186,8 +186,8 @@ python3 record_audio.py
 ```bash
 ros2 topic list
 ros2 topic echo /g1/mics/pcm16
-ros2 topic echo callboy/input_text
-ros2 topic echo callboy/json
+ros2 topic echo /plan/input_text
+ros2 topic echo /plan/json
 ```
 
 ## Troubleshooting

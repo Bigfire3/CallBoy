@@ -15,7 +15,7 @@ from callboy.config import default_config_path
 class InputTextPublisher(Node):
     def __init__(self) -> None:
         super().__init__("input_text_publisher")
-        self._pub = self.create_publisher(String, "callboy/input_text", 10)
+        self._pub = self.create_publisher(String, "/plan/input_text", 10)
 
         # Kept for consistency with other nodes; currently not used.
         self.declare_parameter("config_path", default_config_path())
@@ -33,7 +33,7 @@ class InputTextPublisher(Node):
         self._input_stream = self._open_input_stream()
 
         self.get_logger().info(
-            "Ready. Type text and press Enter to publish to callboy/input_text (Ctrl-D to exit)."
+            "Ready. Type text and press Enter to publish to /plan/input_text (Ctrl-D to exit)."
         )
         self._thread = threading.Thread(target=self._stdin_loop, daemon=True)
         self._thread.start()

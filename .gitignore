@@ -30,3 +30,4 @@ pip-delete-this-directory.txt
 .Trashes
 ehthumbs.db
 Thumbs.db
+.vscode/settings.json
