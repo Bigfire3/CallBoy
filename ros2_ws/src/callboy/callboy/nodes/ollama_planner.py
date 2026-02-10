@@ -10,6 +10,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from callboy.config import default_config_path, load_config
+from callboy.supported_commands import SUPPORTED_COMMANDS
 
 try:
     import requests  # type: ignore
@@ -52,12 +53,7 @@ def _load_prompt_template(*, prompt_file: str, config_path: str) -> str:
     )
 
 
-ALLOWED_COMMANDS = {
-    "set_velocity",
-    "shake_hand",
-    "wave_hand",
-    "wave_hand_with_turn",
-}
+ALLOWED_COMMANDS = set(SUPPORTED_COMMANDS)
 
 
 def _normalize_commands(obj: Dict[str, Any]) -> List[Dict[str, Any]]:
