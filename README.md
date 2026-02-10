@@ -7,7 +7,7 @@ The components are designed so that audio (PCM16) is fed into ROS 2 from a ROS t
 ## Architecture (Data Flow)
 
 ```mermaid
-flowchart LR
+flowchart TD
     START(["Microphone Array"]) -->|"UDP Audiostream"| UDP["udp_audio_topic_publisher"]
     UDP -->|"/g1/mics/pcm16"| ASR["whisper_asr_node"]
     ASR -->|"/plan/input_text"| PLAN["ollama_planner"]
