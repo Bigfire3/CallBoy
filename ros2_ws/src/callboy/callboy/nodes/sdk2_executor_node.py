@@ -50,8 +50,7 @@ class Sdk2ExecutorNode(Node):
         self._lock = threading.Lock()
         self._busy = False
 
-        self._sub = self.create_subscription(String, "callboy/json", self._on_plan_json, 10)
-        # self.get_logger().info("Ready. Subscribed to callboy/json.")
+        self._sub = self.create_subscription(String, "/plan/json", self._on_plan_json, 10)
 
     def _make_cfg(self) -> ExecutorConfig:
         sdk2_cli_path = self.get_parameter("sdk2_cli_path").get_parameter_value().string_value
